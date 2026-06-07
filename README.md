@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FormCraft
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+███████╗ ██████╗ ██████╗ ███╗   ███╗ ██████╗██████╗  █████╗ ███████╗████████╗
+██╔════╝██╔═══██╗██╔══██╗████╗ ████║██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝
+█████╗  ██║   ██║██████╔╝██╔████╔██║██║     ██████╔╝███████║█████╗     ██║
+██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║██║     ██╔══██╗██╔══██║██╔══╝     ██║
+██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║╚██████╗██║  ██║██║  ██║██║        ██║
+╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production-grade no-code form builder SaaS similar to Typeform and Jotform.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Builder | Classic Form | Conversational Form | Dashboard | Responses | Analytics |
+| --- | --- | --- | --- | --- | --- |
+| Add and reorder fields | Public form renderer | One-question flow | Stats and activity | Table and drawer | Charts by field |
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+- Complete auth with credentials, Google OAuth, JWT sessions, and protected app routes
+- Drag-and-drop builder with 12 field types, field settings, validation controls, autosave, preview, share, and publish
+- Public classic and conversational renderers with required validation and themed styling
+- Forms list with templates, search, filters, duplicate, share, close/reopen, and delete
+- Responses table with search, mobile cards, detail drawer, bulk delete, and CSV export
+- Per-question analytics using Recharts
+- Settings page for profile, password, subscription, and account deletion
+- HTML email templates for owner notifications and respondent confirmations
+- Seed script with demo users, forms, and realistic responses
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Layer | Choice |
+| --- | --- |
+| App | Next.js 16 App Router, React 19, TypeScript strict |
+| Data | MongoDB Atlas, Mongoose |
+| Auth | NextAuth v4, bcrypt credentials, Google OAuth |
+| UI | Tailwind CSS v4, Framer Motion, lucide-react |
+| Builder | dnd-kit |
+| Charts | Recharts |
+| Email | Resend |
 
-## Deploy on Vercel
+## Local Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Copy `.env.local.example` to `.env.local` and fill values.
+2. Install dependencies with `npm install`.
+3. Run MongoDB locally or configure `MONGODB_URI` for Atlas.
+4. Seed demo data with `npm run seed`.
+5. Start the app with `npm run dev`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Demo accounts:
+
+- `demo@formcraft.test` / `FormCraft123!`
+- `pro@formcraft.test` / `FormCraft123!`
+- `agency@formcraft.test` / `FormCraft123!`
+
+## Embed Example
+
+```html
+<iframe src="https://your-domain.com/f/FORM_SLUG" style="width:100%;border:0;min-height:640px" loading="lazy"></iframe>
+```
+
+Resend requires a verified sending domain for production email delivery.
+
+Live Vercel URL: configure after deployment.
