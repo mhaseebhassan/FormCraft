@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_SVG_START:ANIMATION_2 class="fixed inset-0 w-full h-full" --><div class="fixed inset-0 w-full h-full" id="animated-svg-ANIMATION_2" style="display:block;"><svg fill="none" height="600" viewbox="0 0 800 600" width="800" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<filter height="140%" id="glow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="5"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Form Field Blocks -->
+<!-- Text Field -->
+<g transform="translate(400, 100)">
+<rect fill="#0F1420" height="48" rx="8" stroke="#7C3AED" stroke-opacity="0.3" stroke-width="1.5" width="240">
+<animatetransform attributename="transform" begin="0.2s" calcmode="spline" dur="1s" fill="freeze" from="0,-500" keysplines="0.175, 0.885, 0.32, 1.275" to="0,0" type="translate"></animatetransform>
+<animate attributename="opacity" begin="0.2s" dur="0.8s" fill="freeze" from="0" to="1"></animate>
+</rect>
+<rect fill="#F1F5F9" fill-opacity="0.1" height="12" rx="2" width="120" x="16" y="16"></rect>
+</g>
+<!-- Checkbox Group -->
+<g transform="translate(350, 180)">
+<rect fill="#0F1420" height="100" rx="8" stroke="#06B6D4" stroke-opacity="0.3" stroke-width="1.5" width="200">
+<animatetransform attributename="transform" begin="0.5s" calcmode="spline" dur="1.2s" fill="freeze" from="0,-500" keysplines="0.175, 0.885, 0.32, 1.275" to="0,0" type="translate"></animatetransform>
+<animate attributename="opacity" begin="0.5s" dur="1s" fill="freeze" from="0" to="1"></animate>
+</rect>
+<rect fill="#06B6D4" fill-opacity="0.4" height="16" rx="4" width="16" x="16" y="20"></rect>
+<rect fill="#94A3B8" fill-opacity="0.2" height="8" rx="2" width="80" x="44" y="24"></rect>
+<rect fill="#0F1420" height="16" rx="4" stroke="#06B6D4" stroke-opacity="0.4" width="16" x="16" y="52"></rect>
+<rect fill="#94A3B8" fill-opacity="0.2" height="8" rx="2" width="60" x="44" y="56"></rect>
+</g>
+<!-- Dropdown -->
+<g transform="translate(420, 310)">
+<rect fill="#0F1420" height="48" rx="8" stroke="#7C3AED" stroke-opacity="0.3" stroke-width="1.5" width="220">
+<animatetransform attributename="transform" begin="0.8s" calcmode="spline" dur="1.4s" fill="freeze" from="0,-500" keysplines="0.175, 0.885, 0.32, 1.275" to="0,0" type="translate"></animatetransform>
+<animate attributename="opacity" begin="0.8s" dur="1.2s" fill="freeze" from="0" to="1"></animate>
+</rect>
+<path d="M190 20L195 25L200 20" stroke="#F1F5F9" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.4" stroke-width="2"></path>
+</g>
+<!-- Glow Halo Effects -->
+<circle cx="520" cy="124" fill="#7C3AED" fill-opacity="0.05" filter="url(#glow)" r="80">
+<animate attributename="r" dur="4s" repeatcount="indefinite" values="70;90;70"></animate>
+</circle>
+<circle cx="450" cy="230" fill="#06B6D4" fill-opacity="0.05" filter="url(#glow)" r="100">
+<animate attributename="r" dur="5s" repeatcount="indefinite" values="90;110;90"></animate>
+</circle>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_2 -->
+</body>
+</html>

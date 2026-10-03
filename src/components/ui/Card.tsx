@@ -3,18 +3,24 @@ import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
-  padding?: "sm" | "md" | "lg";
+  padding?: "sm" | "md" | "lg" | "none";
 }
 
-const paddingClass = { sm: "p-3", md: "p-5", lg: "p-6" };
+const paddingClass = {
+  none: "p-0",
+  sm: "p-4",
+  md: "p-5 md:p-6",
+  lg: "p-6 md:p-8",
+};
 
 export function Card({ hover, padding = "md", className, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border bg-surface shadow-[0_18px_60px_rgba(0,0,0,0.18)]",
+        "relative rounded-xl border border-white/[0.08] bg-[#0f1420]/80 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.35)] shadow-inner-[0_1px_0_rgba(255,255,255,0.06)]",
         paddingClass[padding],
-        hover && "transition hover:border-primary hover:shadow-[0_0_0_1px_rgba(99,102,241,0.2),0_20px_70px_rgba(99,102,241,0.12)]",
+        hover &&
+          "transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-400/30 hover:bg-[#121826]/90 hover:shadow-[0_12px_36px_rgba(0,0,0,0.5),0_0_24px_rgba(124,58,237,0.1)]",
         className,
       )}
       {...props}

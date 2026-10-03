@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FormCraft | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Using Geist Sans via local font definition or similar fallback -->
+<style>
+        @import url('https://fonts.cdnfonts.com/css/geist');
+        
+        body {
+            background-color: #080B11;
+            color: #F1F5F9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-headline-lg { font-family: 'Geist', sans-serif; }
+        .font-label-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .glass-card {
+            background: #0F1420;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.3);
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(#1A1F2E 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .sparkline-svg {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: dash 2s ease-in-out forwards;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "border-glass": "rgba(255, 255, 255, 0.06)",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#713700",
+                      "secondary-fixed-dim": "#4cd7f6",
+                      "surface-dim": "#10131a",
+                      "primary-fixed": "#eaddff",
+                      "primary": "#d2bbff",
+                      "primary-container": "#7c3aed",
+                      "on-tertiary-container": "#ffe0cd",
+                      "on-primary": "#3f008e",
+                      "inverse-primary": "#732ee4",
+                      "surface-variant": "#32353c",
+                      "surface-container-low": "#191c22",
+                      "outline-variant": "#4a4455",
+                      "accent-lime": "#E4F222",
+                      "secondary": "#4cd7f6",
+                      "on-secondary": "#003640",
+                      "on-primary-container": "#ede0ff",
+                      "on-tertiary-fixed": "#301400",
+                      "on-secondary-fixed": "#001f26",
+                      "surface-tint": "#d2bbff",
+                      "tertiary-fixed-dim": "#ffb784",
+                      "surface-bright": "#363940",
+                      "surface-container-high": "#272a31",
+                      "secondary-fixed": "#acedff",
+                      "background": "#10131a",
+                      "error-container": "#93000a",
+                      "surface-container-highest": "#32353c",
+                      "on-surface": "#e0e2eb",
+                      "surface": "#0F1420",
+                      "on-surface-variant": "#ccc3d8",
+                      "on-secondary-fixed-variant": "#004e5c",
+                      "text-muted": "#94A3B8",
+                      "on-secondary-container": "#00424e",
+                      "tertiary-fixed": "#ffdcc6",
+                      "primary-fixed-dim": "#d2bbff",
+                      "text-primary": "#F1F5F9",
+                      "surface-container": "#1d2026",
+                      "on-tertiary": "#4f2500",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#a15100",
+                      "on-background": "#e0e2eb",
+                      "on-error": "#690005",
+                      "tertiary": "#ffb784",
+                      "outline": "#958da1",
+                      "on-primary-fixed": "#25005a",
+                      "glow-violet": "rgba(124, 58, 237, 0.35)",
+                      "on-primary-fixed-variant": "#5a00c6",
+                      "surface-container-lowest": "#0b0e14",
+                      "inverse-on-surface": "#2d3037",
+                      "inverse-surface": "#e0e2eb",
+                      "secondary-container": "#03b5d3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "max-width": "1440px",
+                      "unit": "4px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Geist"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Geist"],
+                      "label-mono": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                      "label-mono": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar (Authority: JSON Mapping) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface border-r border-border-glass flex flex-col py-8 z-40 transition-all duration-300 ease-in-out">
+<!-- Logo -->
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">architecture</span>
+</div>
+<span class="text-text-primary font-bold text-headline-lg font-headline-lg tracking-tighter">FormCraft</span>
+</div>
+<!-- User Context -->
+<div class="px-4 mb-8">
+<div class="flex items-center gap-3 px-2 py-3 rounded-xl bg-white/5 border border-white/5">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-high">
+<img alt="User Workspace" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN58RuaEap-0LAwlQSWnlYZQlYpFhzpZ-_SAVgoENuaIqgxS2lQpfKwDcu1Gg-rlwMnZh5MRGlFlbBbIAXiw_XKl8-j8eIwvCq2iHikZ67gVUcUplUg324FQZ6ulA22wbVS9kmlDWmByrVEMOAojEIca53BPoVsLPkx6Z6k2thXiMcn6tBbvDWkRoW8tfCsE4XLOimEb4cryPMJW7rGt5GdwEfvDQdN0-PePqhK0QngOb-7h66rRQ9OsjGta4yoAP_ohMkulwesIA"/>
+</div>
+<div class="flex flex-col">
+<span class="text-text-primary font-bold text-sm">Acme Corp</span>
+<span class="text-text-muted text-xs font-label-mono">Pro Plan</span>
+</div>
+</div>
+</div>
+<!-- Primary Actions -->
+<div class="px-4 mb-6">
+<button class="w-full py-3 bg-primary-container hover:bg-primary-container/80 text-white rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-glow-violet/20">
+<span class="material-symbols-outlined text-sm">add</span>
+                Create New Form
+            </button>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 px-3 space-y-1">
+<a class="text-primary bg-primary/10 border-r-2 border-primary group flex items-center gap-3 px-3 py-3 rounded-r-none rounded-l-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Overview
+            </a>
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">description</span>
+                Forms
+            </a>
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">inbox</span>
+                Submissions
+            </a>
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">insights</span>
+                Analytics
+            </a>
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<!-- Footer Links -->
+<div class="mt-auto px-3 space-y-1">
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                Help
+            </a>
+<a class="text-text-muted hover:bg-white/5 hover:text-text-primary group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-300 ease-in-out font-label-mono text-label-mono" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen dot-grid relative">
+<!-- TopBar (Authority: JSON Mapping) -->
+<header class="sticky top-0 w-full z-30 bg-background/80 backdrop-blur-lg border-b border-border-glass flex justify-between items-center px-12 py-4">
+<div class="flex items-center gap-4">
+<nav class="flex items-center gap-2 text-sm text-text-muted">
+<span class="hover:text-primary transition-colors cursor-pointer">Home</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-text-primary font-bold">Dashboard</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface-dim border border-border-glass rounded-full pl-10 pr-4 py-2 w-72 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-300" placeholder="Search forms, leads..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full border border-border-glass hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-text-muted">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5">
+<div class="w-full h-full rounded-full overflow-hidden bg-background">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDR3_DDSWyJGZoDaX5nel_-5vKzYQd666nU9PiptUSgoTaruHCFmCLksuORBPUbsQ5c3AbJiK0vnHnD_p8QU-PLM90TuWwKEV51akEhcwPuGkGQXeWib0IaoD3kHRKGWsbxY7_pF1B4U7Zevuup5Tm6MH_Nz2sVktg5u7UGVkWXqXDDzreu4oeniaR9pFPnog5PuUJ1wiZFOpJy7cbVG_VuMQwE7NTWRC6ftbnEhglqq2GeZ00O6pw2Xr2mfoQP-pxoZtrX3EWNWA"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-12 max-w-7xl mx-auto w-full">
+<!-- Welcome Header -->
+<div class="mb-10">
+<h1 class="font-headline-lg text-headline-lg text-text-primary mb-2">Workspace Overview</h1>
+<p class="text-text-muted font-body-md">Manage your active forms and review latest submission metrics.</p>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Card 1 -->
+<div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-label-mono text-xs uppercase tracking-widest">Total Submissions</span>
+<span class="text-accent-lime material-symbols-outlined text-lg">trending_up</span>
+</div>
+<h2 class="text-3xl font-bold text-text-primary count-up" data-target="1240">0</h2>
+</div>
+<div class="h-8 w-full mt-4">
+<svg class="w-full h-full" viewbox="0 0 100 20">
+<path class="sparkline-svg" d="M0 15 Q 10 5, 20 12 T 40 8 T 60 14 T 80 5 T 100 10" fill="none" stroke="#D2BBFF" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-label-mono text-xs uppercase tracking-widest">Conversion Rate</span>
+<span class="text-secondary material-symbols-outlined text-lg">bolt</span>
+</div>
+<h2 class="text-3xl font-bold text-text-primary">12.4<span class="text-xl">%</span></h2>
+</div>
+<div class="h-8 w-full mt-4">
+<svg class="w-full h-full" viewbox="0 0 100 20">
+<path class="sparkline-svg" d="M0 10 Q 15 15, 30 10 T 60 5 T 100 12" fill="none" stroke="#4CD7F6" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-label-mono text-xs uppercase tracking-widest">Active Forms</span>
+<span class="text-primary material-symbols-outlined text-lg">visibility</span>
+</div>
+<h2 class="text-3xl font-bold text-text-primary">34</h2>
+</div>
+<div class="h-8 w-full mt-4">
+<svg class="w-full h-full" viewbox="0 0 100 20">
+<path class="sparkline-svg" d="M0 18 Q 20 2, 40 15 T 60 10 T 80 16 T 100 2" fill="none" stroke="#7C3AED" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-text-muted font-label-mono text-xs uppercase tracking-widest">Avg Response Time</span>
+<span class="text-error material-symbols-outlined text-lg">schedule</span>
+</div>
+<h2 class="text-3xl font-bold text-text-primary">1.2<span class="text-xl font-normal text-text-muted">m</span></h2>
+</div>
+<div class="h-8 w-full mt-4">
+<svg class="w-full h-full" viewbox="0 0 100 20">
+<path class="sparkline-svg" d="M0 5 Q 25 18, 50 10 T 100 15" fill="none" stroke="#FFB4AB" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Forms Section -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="font-headline-lg text-2xl text-text-primary">Active Forms</h3>
+<p class="text-text-muted text-sm">Showing 2 of 34 recent projects</p>
+</div>
+<button class="text-primary text-sm font-medium hover:underline flex items-center gap-1">
+                    View all forms
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Form Card 1 -->
+<div class="glass-card group rounded-2xl overflow-hidden p-6 flex flex-col md:flex-row gap-6">
+<div class="w-full md:w-48 h-40 bg-surface-container-high rounded-xl relative overflow-hidden flex items-center justify-center border border-border-glass">
+<!-- Simulated Form Preview -->
+<div class="absolute inset-0 backdrop-blur-sm bg-gradient-to-b from-primary/5 to-transparent"></div>
+<div class="relative w-full p-4 space-y-3 opacity-40">
+<div class="h-2 w-3/4 bg-white/20 rounded-full"></div>
+<div class="h-2 w-full bg-white/10 rounded-full"></div>
+<div class="h-8 w-full bg-primary/20 rounded-lg border border-primary/30"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-black/40 backdrop-blur text-[10px] font-label-mono text-text-muted rounded border border-white/5 uppercase">Draft</span>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">Waitlist Beta v2</h4>
+<span class="text-[10px] font-label-mono text-text-muted bg-white/5 px-2 py-1 rounded">ID: 88F2-A1</span>
+</div>
+<p class="text-sm text-text-muted mb-4 line-clamp-2">High-conversion landing page form for the upcoming enterprise dashboard release.</p>
+<div class="mt-auto flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-xs text-text-muted font-label-mono">Submissions</span>
+<span class="text-sm font-bold">482</span>
+</div>
+<div class="w-px h-6 bg-border-glass"></div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted font-label-mono">Modified</span>
+<span class="text-sm font-bold">2h ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Card 2 -->
+<div class="glass-card group rounded-2xl overflow-hidden p-6 flex flex-col md:flex-row gap-6">
+<div class="w-full md:w-48 h-40 bg-surface-container-high rounded-xl relative overflow-hidden flex items-center justify-center border border-border-glass">
+<!-- Simulated Form Preview -->
+<div class="absolute inset-0 backdrop-blur-sm bg-gradient-to-b from-secondary/5 to-transparent"></div>
+<div class="relative w-full p-4 space-y-3 opacity-40">
+<div class="h-2 w-1/2 bg-white/20 rounded-full"></div>
+<div class="h-8 w-full bg-secondary/20 rounded-lg border border-secondary/30"></div>
+<div class="h-8 w-full bg-white/10 rounded-lg border border-white/5"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-60"></div>
+<span class="absolute bottom-2 left-2 px-2 py-0.5 bg-secondary-container text-[10px] font-label-mono text-on-secondary-container rounded border border-white/5 uppercase">Published</span>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-text-primary group-hover:text-primary transition-colors">Contact Support</h4>
+<span class="text-[10px] font-label-mono text-text-muted bg-white/5 px-2 py-1 rounded">ID: 32C0-E4</span>
+</div>
+<p class="text-sm text-text-muted mb-4 line-clamp-2">Direct customer support routing form with conditional logic and department mapping.</p>
+<div class="mt-auto flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-xs text-text-muted font-label-mono">Submissions</span>
+<span class="text-sm font-bold">1,892</span>
+</div>
+<div class="w-px h-6 bg-border-glass"></div>
+<div class="flex flex-col">
+<span class="text-xs text-text-muted font-label-mono">Modified</span>
+<span class="text-sm font-bold">5d ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity / Asymmetric Area -->
+<div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Recent Activity (2/3 width) -->
+<div class="lg:col-span-2 glass-card rounded-2xl p-8">
+<h3 class="font-headline-lg text-xl mb-6">Recent Submissions</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 border border-transparent hover:border-border-glass transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">JD</div>
+<div>
+<h5 class="text-sm font-bold">John Doe</h5>
+<p class="text-xs text-text-muted">john.d@example.com</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-label-mono text-text-muted">2 mins ago</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-lime"></span>
+<span class="text-[10px] uppercase font-bold text-text-muted tracking-tighter">Waitlist Beta</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 border border-transparent hover:border-border-glass transition-all duration-200">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold">AS</div>
+<div>
+<h5 class="text-sm font-bold">Alice Smith</h5>
+<p class="text-xs text-text-muted">alice.design@corp.io</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-xs font-label-mono text-text-muted">14 mins ago</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-[10px] uppercase font-bold text-text-muted tracking-tighter">Contact Support</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Plan Stats (1/3 width) -->
+<div class="glass-card rounded-2xl p-8 flex flex-col">
+<h3 class="font-headline-lg text-xl mb-2">Usage</h3>
+<p class="text-sm text-text-muted mb-8">Current billing period</p>
+<div class="space-y-6 flex-1">
+<div>
+<div class="flex justify-between text-xs font-label-mono mb-2">
+<span>Submissions</span>
+<span class="text-text-primary">1,240 / 5,000</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[24.8%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-label-mono mb-2">
+<span>API Requests</span>
+<span class="text-text-primary">85% Capacity</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[85%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-border-glass">
+<button class="w-full py-3 rounded-lg border border-primary text-primary text-sm font-bold hover:bg-primary/10 transition-colors">
+                            Upgrade to Enterprise
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer (Authority: JSON Mapping) -->
+<footer class="mt-auto w-full py-12 px-12 flex flex-col md:flex-row justify-between items-center border-t border-border-glass bg-surface-container-lowest">
+<div class="mb-6 md:mb-0">
+<span class="text-text-primary font-bold text-lg font-headline-lg">FormCraft</span>
+<p class="text-text-muted text-sm mt-1">© 2024 FormCraft Inc. Built for performance.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Privacy</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Terms</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Changelog</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm flex items-center gap-2" href="#">
+<span class="w-2 h-2 rounded-full bg-accent-lime"></span>
+                    Status
+                </a>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interactions and spring-ease counters
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = document.querySelectorAll('.count-up');
+            
+            const animateCounter = (el) => {
+                const target = +el.getAttribute('data-target');
+                const duration = 2000; // ms
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const update = () => {
+                    current += step;
+                    if (current < target) {
+                        el.innerText = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(update);
+                    } else {
+                        el.innerText = target.toLocaleString();
+                    }
+                };
+                update();
+            };
+
+            // Basic Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.classList.contains('count-up')) {
+                            animateCounter(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            counters.forEach(c => observer.observe(c));
+
+            // Custom interaction for sidebar links
+            const navLinks = document.querySelectorAll('aside nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    navLinks.forEach(l => {
+                        l.classList.remove('text-primary', 'bg-primary/10', 'border-r-2', 'border-primary');
+                        l.classList.add('text-text-muted', 'hover:bg-white/5', 'hover:text-text-primary');
+                    });
+                    link.classList.add('text-primary', 'bg-primary/10', 'border-r-2', 'border-primary');
+                    link.classList.remove('text-text-muted', 'hover:bg-white/5', 'hover:text-text-primary');
+                });
+            });
+        });
+    </script>
+</body></html>

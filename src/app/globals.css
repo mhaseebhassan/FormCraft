@@ -1,54 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f1117;
-  --surface: #1a1d2e;
-  --surface-2: #141824;
-  --border: #2a2d3e;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --foreground: #f1f5f9;
+  --background: #111111;
+  --foreground: #f5f5f5;
+  --card: #181818;
+  --card-foreground: #f5f5f5;
+  --surface: #171717;
+  --surface-2: #212121;
+  --surface-container-high: #262626;
+  --border: rgba(255, 255, 255, 0.10);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-hover: rgba(255, 255, 255, 0.22);
+  --primary: #8b5cf6;
+  --primary-container: #7c3aed;
+  --primary-hover: #9333ea;
+  --on-primary: #ffffff;
+  --coral: #e27d61;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --text-primary: #f5f5f5;
+  --text-secondary: #a3a3a3;
+  --text-muted: #737373;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   --color-surface: var(--surface);
-  --color-border: var(--border);
+  --color-surface-2: var(--surface-2);
+  --color-surface-elevated: var(--surface-container-high);
+  --color-border-glass: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-danger: var(--danger);
+  --color-primary-container: var(--primary-container);
+  --color-coral: var(--coral);
+  --color-emerald: var(--emerald);
+  --color-amber: var(--amber);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
+  --color-text-muted: var(--text-muted);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  background-image:
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 0.04), transparent 26rem),
+    radial-gradient(circle at 92% 14%, rgba(226, 125, 97, 0.06), transparent 25rem),
+    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03), transparent 35rem);
+}
+
 ::selection {
-  background: #6366f1;
-  color: white;
+  background: rgba(139, 92, 246, 0.35);
+  color: #ffffff;
+}
+
+/* Custom Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(17, 17, 17, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Spotlight card utility */
+.spotlight-card {
+  --spotlight-x: 50%;
+  --spotlight-y: 50%;
+}
+
+button, input, select, textarea {
+  font: inherit;
 }

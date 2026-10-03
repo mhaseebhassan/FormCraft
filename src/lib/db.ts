@@ -32,6 +32,7 @@ export async function connectToDatabase() {
     cache.promise = mongoose.connect(uri, {
       serverSelectionTimeoutMS: 10000,
       maxPoolSize: 10,
+      socketTimeoutMS: 45000,
     });
   }
 

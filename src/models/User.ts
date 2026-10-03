@@ -2,6 +2,7 @@ import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 const UserSchema = new Schema(
   {
+    clerkId: { type: String, unique: true, sparse: true, index: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true, index: true },
     password: { type: String },
@@ -10,6 +11,7 @@ const UserSchema = new Schema(
     stripeCustomerId: { type: String },
     onboardingComplete: { type: Boolean, default: false },
   },
+
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 

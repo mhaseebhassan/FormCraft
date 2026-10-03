@@ -16,28 +16,32 @@ export function Textarea({ label, error, helperText, required, className, value,
   useEffect(() => {
     if (!ref.current) return;
     ref.current.style.height = "auto";
-    ref.current.style.height = `${ref.current.scrollHeight}px`;
+    ref.current.style.height = `${Math.max(88, ref.current.scrollHeight)}px`;
   }, [value]);
 
   return (
-    <label className="block space-y-2 text-sm">
+    <label className="block space-y-1.5 text-sm">
       {label ? (
-        <span className="font-medium text-text-primary">
-          {label} {required ? <span className="text-danger">*</span> : null}
+        <span className="block text-xs font-medium uppercase tracking-wider text-[#94a3b8]">
+          {label} {required ? <span className="text-red-400">*</span> : null}
         </span>
       ) : null}
       <textarea
         ref={ref}
         className={cn(
-          "min-h-24 w-full resize-none rounded-lg border bg-[#111522] px-3 py-3 text-sm text-text-primary outline-none transition placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/30",
-          error ? "border-danger" : "border-border",
+          "min-h-24 w-full rounded-lg border bg-[#10141f] px-3.5 py-2.5 text-sm text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-violet-400/60 focus:bg-[#131927] focus:ring-2 focus:ring-violet-400/20 disabled:cursor-not-allowed disabled:opacity-50",
+          error ? "border-red-500/60 focus:border-red-500" : "border-white/10 hover:border-white/20",
           className,
         )}
         required={required}
         value={value}
         {...props}
       />
-      {error ? <span className="block text-xs text-danger">{error}</span> : helperText ? <span className="block text-xs text-text-secondary">{helperText}</span> : null}
+      {error ? (
+        <span className="block text-xs font-medium text-red-400">{error}</span>
+      ) : helperText ? (
+        <span className="block text-xs text-[#94a3b8]">{helperText}</span>
+      ) : null}
     </label>
   );
 }

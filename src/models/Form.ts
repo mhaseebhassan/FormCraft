@@ -46,7 +46,7 @@ const FieldSchema = new Schema(
 
 const FormSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    userId: { type: String, required: true, index: true },
     title: { type: String, required: true, default: "Untitled Form" },
     description: { type: String },
     slug: { type: String, required: true, unique: true, index: true },

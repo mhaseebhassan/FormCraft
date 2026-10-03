@@ -2,13 +2,29 @@
 
 import { useParams } from "next/navigation";
 import useSWR from "swr";
-import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Card } from "@/components/ui/Card";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { MetricCard } from "@/components/ui/MetricCard";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { formatDuration } from "@/lib/utils";
+import { Clock3, Inbox, TrendingUp, Zap } from "lucide-react";
 
 const fetcher = (url: string) => fetch(url).then((response) => response.json());
-const colors = ["#6366F1", "#10B981", "#F59E0B", "#EF4444", "#06B6D4"];
+const colors = ["#8b5cf6", "#10b981", "#f59e0b", "#e27d61", "#38bdf8"];
 
 interface AnalyticsField {
   field: { id: string; label: string; type: string };
@@ -22,7 +38,12 @@ interface AnalyticsField {
 }
 
 interface AnalyticsData {
-  overview: { totalResponses: number; completionRate: number; averageTimeToComplete: number; responsesToday: number };
+  overview: {
+    totalResponses: number;
+    completionRate: number;
+    averageTimeToComplete: number;
+    responsesToday: number;
+  };
   responsesOverTime: { date: string; count: number }[];
   fields: AnalyticsField[];
 }
@@ -30,18 +51,164 @@ interface AnalyticsData {
 export default function AnalyticsPage() {
   const params = useParams<{ formId: string }>();
   const { data, isLoading } = useSWR<AnalyticsData>(`/api/forms/${params.formId}/analytics`, fetcher);
+
   if (isLoading || !data) return <Skeleton height="480px" />;
+
   return (
-    <div className="space-y-6">
-      <div><h2 className="text-2xl font-bold text-white">Analytics</h2><p className="text-sm text-text-secondary">Per-question response breakdowns.</p></div>
-      <div className="grid gap-4 md:grid-cols-4">{[
-        ["Total Responses", data.overview.totalResponses],
-        ["Completion Rate", `${data.overview.completionRate}%`],
-        ["Average Time", formatDuration(data.overview.averageTimeToComplete)],
-        ["Responses Today", data.overview.responsesToday],
-      ].map(([label, value]) => <Card key={label}><p className="text-sm text-text-secondary">{label}</p><p className="mt-2 text-2xl font-bold text-white">{value}</p></Card>)}</div>
-      <Card><h3 className="mb-4 font-semibold text-white">Responses over time</h3><div className="h-72"><ResponsiveContainer><LineChart data={data.responsesOverTime}><CartesianGrid stroke="#2A2D3E" /><XAxis dataKey="date" stroke="#94A3B8" /><YAxis stroke="#94A3B8" /><Tooltip contentStyle={{ background: "#1A1D2E", border: "1px solid #2A2D3E" }} /><Line dataKey="count" stroke="#6366F1" strokeWidth={2} /></LineChart></ResponsiveContainer></div></Card>
-      <div className="grid gap-4 lg:grid-cols-2">{data.fields.map((field) => <Card key={field.field.id}><h3 className="mb-4 font-semibold text-white">{field.field.label}</h3>{field.distribution ? <><div className="h-64"><ResponsiveContainer>{["multiple_choice", "dropdown"].includes(field.type) ? <PieChart><Pie data={field.distribution} dataKey="count" nameKey="label">{field.distribution.map((item, index) => <Cell key={item.label} fill={colors[index % colors.length]} />)}</Pie><Tooltip /></PieChart> : <BarChart data={field.distribution}><CartesianGrid stroke="#2A2D3E" /><XAxis dataKey="label" stroke="#94A3B8" /><YAxis stroke="#94A3B8" /><Tooltip /><Bar dataKey="count" fill="#6366F1" /></BarChart>}</ResponsiveContainer></div><table className="mt-4 w-full text-sm"><tbody>{field.distribution.map((item) => <tr key={item.label} className="border-t border-border"><td className="py-2 text-text-secondary">{item.label}</td><td className="py-2 text-right text-white">{item.count}</td></tr>)}</tbody></table></> : <div className="grid grid-cols-2 gap-3"><Card padding="sm"><p className="text-sm text-text-secondary">Average</p><p className="text-xl font-bold">{field.average?.toFixed(1)}</p></Card><Card padding="sm"><p className="text-sm text-text-secondary">Median</p><p className="text-xl font-bold">{field.median}</p></Card><Card padding="sm"><p className="text-sm text-text-secondary">Min</p><p className="text-xl font-bold">{field.min}</p></Card><Card padding="sm"><p className="text-sm text-text-secondary">Max</p><p className="text-xl font-bold">{field.max}</p></Card></div>}</Card>)}</div>
+    <div className="space-y-8 animate-in fade-in-0 duration-500 max-w-7xl mx-auto">
+      <PageHeader
+        eyebrow="Conversion Breakdown · Form Analytics"
+        title="Form Analytics"
+        description="Per-question distribution, respondent drop-off, and submission timelines."
+      />
+
+      <div className="grid gap-4 md:grid-cols-4">
+        <MetricCard
+          label="Total Responses"
+          value={String(data.overview.totalResponses)}
+          detail="Recorded submissions"
+          icon={Inbox}
+          tone="violet"
+        />
+        <MetricCard
+          label="Completion Rate"
+          value={`${data.overview.completionRate}%`}
+          detail="Optimal funnel"
+          icon={Zap}
+          tone="coral"
+        />
+        <MetricCard
+          label="Average Time"
+          value={formatDuration(data.overview.averageTimeToComplete)}
+          detail="Time to finish"
+          icon={Clock3}
+          tone="emerald"
+        />
+        <MetricCard
+          label="Responses Today"
+          value={String(data.overview.responsesToday)}
+          detail="Last 24 hours"
+          icon={TrendingUp}
+          tone="amber"
+        />
+      </div>
+
+      <SpotlightCard tint="violet" className="p-6">
+        <h3 className="mb-4 font-heading text-lg font-bold text-neutral-100">
+          Submissions Over Time
+        </h3>
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data.responsesOverTime}>
+              <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+              <XAxis dataKey="date" stroke="#737373" fontSize={11} />
+              <YAxis stroke="#737373" fontSize={11} />
+              <Tooltip
+                contentStyle={{
+                  background: "#171717",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                }}
+              />
+              <Line dataKey="count" stroke="#8b5cf6" strokeWidth={2.5} dot={{ fill: "#8b5cf6", r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </SpotlightCard>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {data.fields.map((field) => (
+          <SpotlightCard key={field.field.id} tint="ink" className="p-6">
+            <div className="flex items-center justify-between mb-4 border-b border-white/[0.08] pb-3">
+              <h3 className="font-heading text-base font-bold text-neutral-100 truncate pr-2">
+                {field.field.label}
+              </h3>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                {field.type}
+              </span>
+            </div>
+
+            {field.distribution ? (
+              <>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    {["multiple_choice", "dropdown"].includes(field.type) ? (
+                      <PieChart>
+                        <Pie data={field.distribution} dataKey="count" nameKey="label" innerRadius={45} outerRadius={80}>
+                          {field.distribution.map((item, index) => (
+                            <Cell key={item.label} fill={colors[index % colors.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            background: "#171717",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            borderRadius: "12px",
+                          }}
+                        />
+                      </PieChart>
+                    ) : (
+                      <BarChart data={field.distribution}>
+                        <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+                        <XAxis dataKey="label" stroke="#737373" fontSize={11} />
+                        <YAxis stroke="#737373" fontSize={11} />
+                        <Tooltip
+                          contentStyle={{
+                            background: "#171717",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            borderRadius: "12px",
+                          }}
+                        />
+                        <Bar dataKey="count" fill="#8b5cf6" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    )}
+                  </ResponsiveContainer>
+                </div>
+                <table className="mt-4 w-full text-xs">
+                  <tbody className="divide-y divide-white/[0.06]">
+                    {field.distribution.map((item) => (
+                      <tr key={item.label}>
+                        <td className="py-2 text-neutral-400">{item.label}</td>
+                        <td className="py-2 text-right font-mono font-bold text-neutral-200">
+                          {item.count}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 text-center">
+                  <p className="text-[10px] uppercase font-mono text-neutral-400">Average</p>
+                  <p className="mt-1 text-xl font-bold font-mono text-neutral-100">
+                    {field.average?.toFixed(1) ?? "N/A"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 text-center">
+                  <p className="text-[10px] uppercase font-mono text-neutral-400">Median</p>
+                  <p className="mt-1 text-xl font-bold font-mono text-neutral-100">
+                    {field.median ?? "N/A"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 text-center">
+                  <p className="text-[10px] uppercase font-mono text-neutral-400">Min</p>
+                  <p className="mt-1 text-xl font-bold font-mono text-neutral-100">
+                    {field.min ?? "N/A"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 text-center">
+                  <p className="text-[10px] uppercase font-mono text-neutral-400">Max</p>
+                  <p className="mt-1 text-xl font-bold font-mono text-neutral-100">
+                    {field.max ?? "N/A"}
+                  </p>
+                </div>
+              </div>
+            )}
+          </SpotlightCard>
+        ))}
+      </div>
     </div>
   );
 }

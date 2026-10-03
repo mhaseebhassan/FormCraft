@@ -1,6 +1,6 @@
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
-import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 
 export function jsonError(message: string, status = 400) {
@@ -9,9 +9,8 @@ export function jsonError(message: string, status = 400) {
 
 export async function requireUserId() {
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-  if (!userId) return null;
-  return userId;
+  if (!session?.user || !("id" in session.user)) return null;
+  return session.user.id as string;
 }
 
 export async function withDatabase() {

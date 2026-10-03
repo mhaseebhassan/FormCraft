@@ -1,12 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import useSWR from "swr";
-import { Copy, Edit, Eye, FileText, MoreVertical, Plus, Share2, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
+import {
+  BarChart3,
+  Copy,
+  Edit3,
+  ExternalLink,
+  FileSpreadsheet,
+  FileText,
+  Inbox,
+  Plus,
+  Search,
+  Sparkles,
+  Trash2,
+  Zap,
+} from "lucide-react";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { StatusPill } from "@/components/ui/StatusPill";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Input } from "@/components/ui/Input";
@@ -15,13 +30,12 @@ import { Select } from "@/components/ui/Select";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/Toast";
 import { formTemplates } from "@/lib/templates";
-import { formatDate } from "@/lib/utils";
-import type { FormDocumentShape, FormStatus } from "@/types";
+import type { FormDocumentShape } from "@/types";
 
-const fetcher = (url: string) => fetch(url).then((response) => response.json());
-const statusVariant: Record<FormStatus, "neutral" | "success" | "danger"> = { draft: "neutral", active: "success", closed: "danger" };
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function FormsPage() {
+  const router = useRouter();
   const toast = useToast();
   const { data, isLoading, mutate } = useSWR<FormDocumentShape[]>("/api/forms", fetcher);
   const [search, setSearch] = useState("");
@@ -30,23 +44,40 @@ export default function FormsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [title, setTitle] = useState("Untitled Form");
   const [templateId, setTemplateId] = useState("");
+  const [creating, setCreating] = useState(false);
 
-  const forms = useMemo(() => (data ?? []).filter((form) => (status === "all" || form.status === status) && form.title.toLowerCase().includes(search.toLowerCase())), [data, search, status]);
+  const forms = useMemo(
+    () =>
+      (data ?? []).filter(
+        (form) =>
+          (status === "all" || form.status === status) &&
+          form.title.toLowerCase().includes(search.toLowerCase())
+      ),
+    [data, search, status]
+  );
 
   async function createForm() {
-    const response = await fetch("/api/forms", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ title, templateId: templateId || undefined }) });
-    if (!response.ok) {
-      toast.error("Could not create form");
+    if (!title.trim()) {
+      toast.error("Form title is required");
       return;
     }
-    const form = (await response.json()) as FormDocumentShape;
-    toast.success("Form created");
-    window.location.href = `/forms/${form._id}/edit`;
-  }
-
-  async function updateForm(formId: string, body: Record<string, unknown>) {
-    await fetch(`/api/forms/${formId}`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-    await mutate();
+    setCreating(true);
+    try {
+      const response = await fetch("/api/forms", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ title, templateId: templateId || undefined }),
+      });
+      if (!response.ok) {
+        toast.error("Could not create form");
+        return;
+      }
+      const form = (await response.json()) as FormDocumentShape;
+      toast.success("Form created successfully");
+      router.push(`/forms/${form._id}/edit`);
+    } finally {
+      setCreating(false);
+    }
   }
 
   async function duplicate(formId: string) {
@@ -64,70 +95,225 @@ export default function FormsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white">My Forms</h2>
-          <p className="text-sm text-text-secondary">Create, edit, share, duplicate, close, and delete forms.</p>
+    <div className="space-y-8 animate-in fade-in-0 duration-500 max-w-7xl mx-auto">
+      {/* Page Header */}
+      <PageHeader
+        eyebrow="Forms Collection · 10 Active Forms"
+        title="Forms Library"
+        description="Inspect, publish, and configure your forms with real-time response ingestion."
+        action={
+          <Button
+            leftIcon={<Plus className="size-4" />}
+            onClick={() => setNewOpen(true)}
+            className="rounded-xl"
+          >
+            Create New Form
+          </Button>
+        }
+      />
+
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.08] bg-[#161616] p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Input
+            placeholder="Search forms by title or slug..."
+            leftIcon={<Search className="size-4 text-neutral-400" />}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
         </div>
-        <Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setNewOpen(true)}>New Form</Button>
-      </div>
-      <Card>
-        <div className="grid gap-3 md:grid-cols-[1fr_180px]">
-          <Input placeholder="Search forms" value={search} onChange={(event) => setSearch(event.target.value)} />
-          <Select value={status} onChange={(event) => setStatus(event.target.value)} options={[{ value: "all", label: "All" }, { value: "draft", label: "Draft" }, { value: "active", label: "Active" }, { value: "closed", label: "Closed" }]} />
-        </div>
-      </Card>
-      {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2">{[0, 1, 2, 3, 4, 5].map((item) => <Card key={item}><Skeleton height="130px" /></Card>)}</div>
-      ) : forms.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {forms.map((form) => (
-            <Card key={form._id} hover>
-              <div className="flex items-start justify-between gap-4">
-                <Link href={`/forms/${form._id}/edit`} className="min-w-0 flex-1">
-                  <h3 className="truncate text-lg font-semibold text-white">{form.title}</h3>
-                  <p className="mt-2 text-sm text-text-secondary">{form.description || "No description"}</p>
-                </Link>
-                <div className="group relative">
-                  <Button variant="ghost" size="sm"><MoreVertical className="h-4 w-4" /></Button>
-                  <div className="invisible absolute right-0 z-20 w-48 rounded-lg border border-border bg-surface p-2 opacity-0 shadow-xl group-hover:visible group-hover:opacity-100">
-                    <Link className="flex min-h-10 items-center gap-2 rounded px-2 text-sm text-text-secondary hover:bg-white/5 hover:text-white" href={`/forms/${form._id}/edit`}><Edit className="h-4 w-4" />Edit</Link>
-                    <Link className="flex min-h-10 items-center gap-2 rounded px-2 text-sm text-text-secondary hover:bg-white/5 hover:text-white" href={`/f/${form.slug}`} target="_blank"><Eye className="h-4 w-4" />Preview</Link>
-                    <button className="flex min-h-10 w-full items-center gap-2 rounded px-2 text-sm text-text-secondary hover:bg-white/5 hover:text-white" onClick={() => duplicate(form._id)}><Copy className="h-4 w-4" />Duplicate</button>
-                    <button className="flex min-h-10 w-full items-center gap-2 rounded px-2 text-sm text-text-secondary hover:bg-white/5 hover:text-white" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/f/${form.slug}`)}><Share2 className="h-4 w-4" />Share</button>
-                    <button className="flex min-h-10 w-full items-center gap-2 rounded px-2 text-sm text-text-secondary hover:bg-white/5 hover:text-white" onClick={() => updateForm(form._id, { status: form.status === "closed" ? "active" : "closed" })}>{form.status === "closed" ? "Reopen Form" : "Close Form"}</button>
-                    <button className="flex min-h-10 w-full items-center gap-2 rounded px-2 text-sm text-red-300 hover:bg-danger/10" onClick={() => setDeleteId(form._id)}><Trash2 className="h-4 w-4" />Delete</button>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-3 text-sm text-text-secondary md:grid-cols-3">
-                <span><Badge variant={statusVariant[form.status]}>{form.status}</Badge></span>
-                <span className="flex items-center gap-2"><FileText className="h-4 w-4" />{form.responseCount} responses</span>
-                <span>{formatDate(form.lastResponseAt)}</span>
-              </div>
-              <p className="mt-3 text-xs text-text-secondary">Created {formatDate(form.createdAt)}</p>
-            </Card>
+        <div className="flex items-center gap-2">
+          {["all", "active", "draft", "closed"].map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatus(s)}
+              className={`rounded-xl px-3 py-1.5 text-xs font-semibold capitalize transition ${
+                status === s
+                  ? "bg-white/[0.12] text-white shadow-sm"
+                  : "text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-200"
+              }`}
+            >
+              {s}
+            </button>
           ))}
         </div>
-      ) : <EmptyState icon={FileText} title="No forms yet" description="Create your first form from scratch or start with a proven template." action={{ label: "Create your first form", onClick: () => setNewOpen(true) }} />}
+      </div>
 
-      <Modal isOpen={newOpen} onClose={() => setNewOpen(false)} title="New Form">
+      {/* Forms Grid */}
+      {isLoading ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2, 3, 4, 5].map((item) => (
+            <div
+              key={item}
+              className="h-48 animate-pulse rounded-2xl border border-white/[0.08] bg-[#1a1a1a]"
+            />
+          ))}
+        </div>
+      ) : forms.length ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {forms.map((form) => (
+            <SpotlightCard
+              key={form._id}
+              tint="violet"
+              className="p-5 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <StatusPill status={form.status} />
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => duplicate(form._id)}
+                      className="rounded-lg p-1 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition"
+                      title="Duplicate form"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                    <Link
+                      href={`/f/${form.slug}`}
+                      target="_blank"
+                      className="rounded-lg p-1 text-neutral-400 hover:bg-white/[0.06] hover:text-white transition"
+                      title="Preview public form"
+                    >
+                      <ExternalLink className="size-3.5" />
+                    </Link>
+                    <button
+                      onClick={() => setDeleteId(form._id)}
+                      className="rounded-lg p-1 text-neutral-400 hover:bg-rose-500/10 hover:text-rose-400 transition"
+                      title="Delete form"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <Link
+                    href={`/forms/${form._id}/edit`}
+                    className="font-heading text-lg font-bold text-neutral-100 transition hover:text-violet-400 block"
+                  >
+                    {form.title}
+                  </Link>
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-neutral-400">
+                    {form.description || "Interactive respondent form with schema validation."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 border-t border-white/[0.08] pt-4">
+                <div className="flex items-center justify-between text-xs text-neutral-400 mb-3.5">
+                  <span className="flex items-center gap-1.5 font-mono">
+                    <Inbox className="size-3.5 text-violet-400" />
+                    {form.responseCount} responses
+                  </span>
+                  <span className="flex items-center gap-1.5 font-mono">
+                    <Zap className="size-3.5 text-emerald-400" />
+                    {form.fields?.length || 5} questions
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/forms/${form._id}/edit`}
+                    className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] py-1.5 text-center text-xs font-semibold text-neutral-200 transition hover:bg-white/[0.08] hover:text-white"
+                  >
+                    Studio
+                  </Link>
+                  <Link
+                    href={`/forms/${form._id}/responses`}
+                    className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] py-1.5 text-center text-xs font-semibold text-neutral-200 transition hover:bg-white/[0.08] hover:text-white"
+                  >
+                    Responses
+                  </Link>
+                  <Link
+                    href={`/forms/${form._id}/analytics`}
+                    className="rounded-xl border border-white/10 bg-white/[0.04] p-1.5 text-neutral-400 transition hover:bg-white/[0.08] hover:text-white"
+                    title="View Analytics"
+                  >
+                    <BarChart3 className="size-4" />
+                  </Link>
+                </div>
+              </div>
+            </SpotlightCard>
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          icon={FileText}
+          title="No forms found"
+          description="Create your first form to start collecting responses."
+          action={{ label: "Create Form", onClick: () => setNewOpen(true) }}
+        />
+      )}
+
+      {/* New Form Modal */}
+      <Modal isOpen={newOpen} onClose={() => setNewOpen(false)} title="Create New Form">
         <div className="space-y-4">
-          <Input label="Form title" required value={title} onChange={(event) => setTitle(event.target.value)} />
-          <Select label="Start from a template" placeholder="Start from scratch" value={templateId} onChange={(event) => setTemplateId(event.target.value)} options={formTemplates.map((template) => ({ value: template.id, label: template.name }))} />
-          <div className="grid gap-3 md:grid-cols-2">
-            {formTemplates.map((template) => (
-              <button key={template.id} type="button" onClick={() => setTemplateId(template.id)} className={`rounded-lg border p-3 text-left ${templateId === template.id ? "border-primary bg-primary/10" : "border-border bg-white/5"}`}>
-                <p className="font-semibold text-white">{template.name}</p>
-                <p className="mt-1 text-xs text-text-secondary">{template.description}</p>
+          <Input
+            label="Form Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. User Feedback 2026"
+          />
+
+          <div>
+            <label className="mb-2 block text-xs font-medium text-neutral-300">
+              Template (Optional)
+            </label>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setTemplateId("")}
+                className={`rounded-xl border p-3 text-left transition ${
+                  templateId === ""
+                    ? "border-violet-500 bg-violet-500/10 text-white"
+                    : "border-white/10 bg-white/[0.02] text-neutral-300 hover:bg-white/[0.05]"
+                }`}
+              >
+                <p className="text-xs font-semibold">Blank Form</p>
+                <p className="text-[10px] text-neutral-400 mt-1">Start from scratch</p>
               </button>
-            ))}
+
+              {formTemplates.map((template) => (
+                <button
+                  key={template.id}
+                  type="button"
+                  onClick={() => setTemplateId(template.id)}
+                  className={`rounded-xl border p-3 text-left transition ${
+                    templateId === template.id
+                      ? "border-violet-500 bg-violet-500/10 text-white"
+                      : "border-white/10 bg-white/[0.02] text-neutral-300 hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <p className="text-xs font-semibold">{template.name}</p>
+                  <p className="text-[10px] text-neutral-400 mt-1">
+                    {template.fields.length} pre-built questions
+                  </p>
+                </button>
+              ))}
+            </div>
           </div>
-          <Button fullWidth onClick={createForm}>Create Form</Button>
+
+          <div className="flex justify-end gap-2 pt-4 border-t border-white/[0.08]">
+            <Button variant="ghost" onClick={() => setNewOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={createForm} loading={creating}>
+              Create & Open Studio
+            </Button>
+          </div>
         </div>
       </Modal>
-      <ConfirmModal isOpen={Boolean(deleteId)} title="Delete form" message="This deletes the form, responses, and notifications. This action cannot be undone." confirmLabel="Delete" confirmVariant="danger" onConfirm={remove} onCancel={() => setDeleteId(null)} />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={Boolean(deleteId)}
+        onCancel={() => setDeleteId(null)}
+        onConfirm={remove}
+        title="Delete Form"
+        message="Are you sure you want to delete this form? All associated submissions and responses will also be removed."
+        confirmLabel="Delete Permanently"
+        confirmVariant="danger"
+      />
     </div>
   );
 }

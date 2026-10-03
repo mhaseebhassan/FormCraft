@@ -11,30 +11,53 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: ReactNode;
 }
 
-export function Input({ label, error, helperText, leftIcon, rightIcon, required, className, ...props }: InputProps) {
+export function Input({
+  label,
+  error,
+  helperText,
+  leftIcon,
+  rightIcon,
+  required,
+  className,
+  ...props
+}: InputProps) {
   return (
-    <label className="block space-y-2 text-sm">
+    <label className="block space-y-1.5 text-sm">
       {label ? (
-        <span className="font-medium text-text-primary">
-          {label} {required ? <span className="text-danger">*</span> : null}
+        <span className="block text-xs font-medium uppercase tracking-wider text-[#94a3b8]">
+          {label} {required ? <span className="text-red-400">*</span> : null}
         </span>
       ) : null}
       <span className="relative block">
-        {leftIcon ? <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">{leftIcon}</span> : null}
+        {leftIcon ? (
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8]">
+            {leftIcon}
+          </span>
+        ) : null}
         <input
           className={cn(
-            "min-h-11 w-full rounded-lg border bg-[#111522] px-3 text-sm text-text-primary outline-none transition placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/30",
+            "h-10 w-full rounded-lg border bg-[#10141f] px-3.5 text-sm text-[#f8fafc] outline-none transition-all placeholder:text-[#64748b] focus:border-violet-400/60 focus:bg-[#131927] focus:ring-2 focus:ring-violet-400/20 disabled:cursor-not-allowed disabled:opacity-50",
             leftIcon && "pl-10",
             rightIcon && "pr-10",
-            error ? "border-danger" : "border-border",
+            error
+              ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20"
+              : "border-white/10 hover:border-white/20",
             className,
           )}
           required={required}
           {...props}
         />
-        {rightIcon ? <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary">{rightIcon}</span> : null}
+        {rightIcon ? (
+          <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8]">
+            {rightIcon}
+          </span>
+        ) : null}
       </span>
-      {error ? <span className="block text-xs text-danger">{error}</span> : helperText ? <span className="block text-xs text-text-secondary">{helperText}</span> : null}
+      {error ? (
+        <span className="block text-xs font-medium text-red-400">{error}</span>
+      ) : helperText ? (
+        <span className="block text-xs text-[#94a3b8]">{helperText}</span>
+      ) : null}
     </label>
   );
 }

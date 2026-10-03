@@ -1,3 +1,5 @@
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 import bcrypt from "bcryptjs";
 import { connectToDatabase } from "../src/lib/db";
 import { formTemplates } from "../src/lib/templates";
@@ -31,7 +33,7 @@ async function main() {
   for (const userData of users) {
     const user = await User.create({ ...userData, password });
     for (const template of formTemplates.slice(0, userData.email.startsWith("agency") ? 4 : 3)) {
-      const form = await Form.create({ userId: user._id, title: template.name, slug: generateSlug(), status: "active", fields: template.fields });
+      const form = await Form.create({ userId: String(user._id), title: template.name, slug: generateSlug(), status: "active", fields: template.fields });
       const count = 50 + Math.floor(Math.random() * 150);
       const responses = Array.from({ length: count }).map((_, index) => {
         const createdAt = new Date(Date.now() - Math.floor(Math.random() * 60) * 86400000);

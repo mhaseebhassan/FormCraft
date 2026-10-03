@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FormCraft | Conversational Renderer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Geist:wght@700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "border-glass": "rgba(255, 255, 255, 0.06)",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#713700",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "surface-dim": "#10131a",
+                    "primary-fixed": "#eaddff",
+                    "primary": "#d2bbff",
+                    "primary-container": "#7c3aed",
+                    "on-tertiary-container": "#ffe0cd",
+                    "on-primary": "#3f008e",
+                    "inverse-primary": "#732ee4",
+                    "surface-variant": "#32353c",
+                    "surface-container-low": "#191c22",
+                    "outline-variant": "#4a4455",
+                    "accent-lime": "#E4F222",
+                    "secondary": "#4cd7f6",
+                    "on-secondary": "#003640",
+                    "on-primary-container": "#ede0ff",
+                    "on-tertiary-fixed": "#301400",
+                    "on-secondary-fixed": "#001f26",
+                    "surface-tint": "#d2bbff",
+                    "tertiary-fixed-dim": "#ffb784",
+                    "surface-bright": "#363940",
+                    "surface-container-high": "#272a31",
+                    "secondary-fixed": "#acedff",
+                    "background": "#080B11",
+                    "error-container": "#93000a",
+                    "surface-container-highest": "#32353c",
+                    "on-surface": "#e0e2eb",
+                    "surface": "#0F1420",
+                    "on-surface-variant": "#ccc3d8",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "text-muted": "#94A3B8",
+                    "on-secondary-container": "#00424e",
+                    "tertiary-fixed": "#ffdcc6",
+                    "primary-fixed-dim": "#d2bbff",
+                    "text-primary": "#F1F5F9",
+                    "surface-container": "#1d2026",
+                    "on-tertiary": "#4f2500",
+                    "error": "#ffb4ab",
+                    "tertiary-container": "#a15100",
+                    "on-background": "#e0e2eb",
+                    "on-error": "#690005",
+                    "tertiary": "#ffb784",
+                    "outline": "#958da1",
+                    "on-primary-fixed": "#25005a",
+                    "glow-violet": "rgba(124, 58, 237, 0.35)",
+                    "on-primary-fixed-variant": "#5a00c6",
+                    "surface-container-lowest": "#0b0e14",
+                    "inverse-on-surface": "#2d3037",
+                    "inverse-surface": "#e0e2eb",
+                    "secondary-container": "#03b5d3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "margin-desktop": "48px",
+                    "max-width": "1440px",
+                    "unit": "4px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Geist"],
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "label-mono": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                    "label-mono": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #080B11;
+            overflow: hidden;
+            color: #F1F5F9;
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(#1A1F2E 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .question-enter {
+            animation: cinematic-entry 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cinematic-entry {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.4);
+            border-color: #7c3aed;
+        }
+
+        .progress-cyan {
+            box-shadow: 0 0 15px rgba(76, 215, 246, 0.6);
+        }
+
+        .keyboard-hint {
+            animation: pulse-soft 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- Atmospheric Layer -->
+<div class="fixed inset-0 dot-grid opacity-40 pointer-events-none"></div>
+<div class="fixed inset-0 bg-gradient-to-b from-transparent via-transparent to-background/80 pointer-events-none"></div>
+<!-- Top Progress Bar -->
+<div class="fixed top-0 left-0 w-full h-1 z-50 bg-white/5">
+<div class="h-full bg-secondary progress-cyan transition-all duration-700 ease-out" id="progressBar" style="width: 25%;"></div>
+</div>
+<!-- Main Question Canvas -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop">
+<div class="w-full max-w-3xl space-y-12" id="questionContainer">
+<!-- Question Content -->
+<div class="question-enter" id="activeQuestion">
+<div class="space-y-6">
+<div class="flex items-center space-x-4">
+<span class="font-label-mono text-label-mono text-secondary px-3 py-1 bg-secondary/10 rounded-full border border-secondary/20">01</span>
+<span class="font-label-mono text-label-mono text-text-muted uppercase tracking-widest">Introduction</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-text-primary">
+                        First things first, what's your full name?
+                    </h1>
+<div class="relative pt-8 group">
+<input autocomplete="off" autofocus="" class="w-full bg-transparent border-0 border-b-2 border-border-glass py-4 text-2xl md:text-4xl font-headline-lg text-text-primary focus:ring-0 focus:border-primary-container transition-all duration-300 placeholder:text-text-muted/30" id="mainInput" placeholder="Type your answer here..." type="text"/>
+<!-- Interactive Underline/Glow -->
+<div class="absolute bottom-0 left-0 h-0.5 bg-primary w-0 group-focus-within:w-full transition-all duration-500 shadow-[0_0_12px_rgba(124,58,237,0.5)]"></div>
+</div>
+</div>
+<!-- Keyboard Hint -->
+<div class="mt-12 flex items-center space-x-6 text-text-muted keyboard-hint">
+<div class="flex items-center space-x-2">
+<kbd class="px-2 py-1 bg-surface-variant/50 border border-border-glass rounded text-[10px] font-label-mono">ENTER</kbd>
+<span class="font-label-mono text-label-mono">to advance</span>
+</div>
+<div class="w-px h-4 bg-border-glass"></div>
+<div class="flex items-center space-x-3 hover:text-text-primary transition-colors cursor-pointer group">
+<span class="font-label-mono text-label-mono">press</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-y-0.5 transition-transform">keyboard_arrow_down</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Branding -->
+<footer class="fixed bottom-0 left-0 w-full py-8 px-margin-mobile md:px-margin-desktop flex justify-between items-end pointer-events-none">
+<div class="flex flex-col space-y-2 pointer-events-auto">
+<div class="flex items-center space-x-2 opacity-50 hover:opacity-100 transition-opacity">
+<span class="font-label-mono text-[10px] uppercase tracking-tighter text-text-muted">Powered by</span>
+<span class="font-headline-lg text-lg font-bold text-text-primary tracking-tighter">FormCraft</span>
+</div>
+</div>
+<div class="flex flex-col items-end space-y-4 pointer-events-auto">
+<div class="flex space-x-2">
+<button class="w-10 h-10 rounded-lg bg-surface border border-border-glass flex items-center justify-center hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-text-muted">arrow_upward</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-surface border border-border-glass flex items-center justify-center hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-text-muted">arrow_downward</span>
+</button>
+</div>
+</div>
+</footer>
+<script>
+        const questions = [
+            {
+                id: "01",
+                category: "Introduction",
+                text: "First things first, what's your full name?",
+                placeholder: "Type your answer here...",
+                progress: 25
+            },
+            {
+                id: "02",
+                category: "Contact",
+                text: "Great to meet you! What's your professional email address?",
+                placeholder: "name@company.com",
+                progress: 50
+            },
+            {
+                id: "03",
+                category: "Project",
+                text: "Tell us a bit about what you're building with FormCraft.",
+                placeholder: "I'm building a...",
+                progress: 75
+            },
+            {
+                id: "04",
+                category: "Finalize",
+                text: "Ready to launch your conversational experience?",
+                placeholder: "Type 'Yes' to confirm",
+                progress: 100
+            }
+        ];
+
+        let currentIndex = 0;
+        const mainInput = document.getElementById('mainInput');
+        const activeQuestion = document.getElementById('activeQuestion');
+        const progressBar = document.getElementById('progressBar');
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                showSuccess();
+            }
+        }
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            
+            // Retrigger animation
+            activeQuestion.classList.remove('question-enter');
+            void activeQuestion.offsetWidth; // Trigger reflow
+            activeQuestion.classList.add('question-enter');
+
+            // Update Content
+            activeQuestion.querySelector('.text-secondary').textContent = q.id;
+            activeQuestion.querySelector('.tracking-widest').textContent = q.category;
+            activeQuestion.querySelector('h1').textContent = q.text;
+            mainInput.placeholder = q.placeholder;
+            mainInput.value = "";
+            
+            // Update Progress
+            progressBar.style.width = `${q.progress}%`;
+        }
+
+        function showSuccess() {
+            activeQuestion.innerHTML = `
+                <div class="text-center space-y-8">
+                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 border border-primary/20 mb-4">
+                        <span class="material-symbols-outlined text-5xl text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    </div>
+                    <h1 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-text-primary">
+                        Submission Received!
+                    </h1>
+                    <p class="text-text-muted text-xl max-w-md mx-auto">
+                        Your technical brief has been successfully logged. Our team will review the details and reach out shortly.
+                    </p>
+                    <div class="pt-8">
+                        <button onclick="location.reload()" class="px-8 py-3 bg-primary text-on-primary rounded-lg font-bold hover:scale-105 transition-transform">
+                            Finish Session
+                        </button>
+                    </div>
+                </div>
+            `;
+            progressBar.style.width = '100%';
+        }
+
+        mainInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && mainInput.value.trim() !== "") {
+                nextQuestion();
+            }
+        });
+
+        // Focus maintainer
+        document.addEventListener('click', () => {
+            if(mainInput) mainInput.focus();
+        });
+    </script>
+</body></html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FormCraft | Build the future of forms</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .shimmer-sweep:hover::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 1s ease-in-out forwards;
+        }
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .glass-card {
+            background: rgba(15, 20, 32, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
+        }
+        .glass-card:hover {
+            transform: translateY(-10px) rotateX(4deg) rotateY(-2deg);
+            border-color: rgba(210, 187, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
+        }
+        
+        .btn-3d {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 0 rgb(91, 33, 182), 0 10px 20px rgba(124, 58, 237, 0.3);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgb(91, 33, 182), 0 4px 10px rgba(124, 58, 237, 0.2);
+        }
+        .btn-3d:hover {
+            box-shadow: 0 4px 0 rgb(91, 33, 182), 0 15px 30px rgba(124, 58, 237, 0.5);
+        }
+
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(circle at 1px 1px, rgba(210, 187, 255, 0.1) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        .volumetric-light {
+            background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(210, 187, 255, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "border-glass": "rgba(255, 255, 255, 0.08)",
+                        "primary": "#d2bbff",
+                        "primary-container": "#7c3aed",
+                        "on-primary-container": "#ede0ff",
+                        "background": "#0b0e14",
+                        "surface": "#0F1420",
+                        "on-surface": "#e0e2eb",
+                        "text-primary": "#F1F5F9",
+                        "text-muted": "#94A3B8",
+                        "accent-lime": "#E4F222"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "max-width": "1440px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-md": ["Inter"],
+                        "label-mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary/30 font-body-md overflow-x-hidden">
+<!-- Immersive Background Layers -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+<div class="absolute inset-0 dot-grid opacity-30"></div>
+<!-- Volumetric Gradients -->
+<div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] volumetric-light blur-[120px]"></div>
+<div class="absolute top-[40%] -right-[10%] w-[50%] h-[50%] bg-secondary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[50%] volumetric-light blur-[150px]"></div>
+<!-- Moving Particles (Simulated with simple divs) -->
+<div class="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/40 rounded-full blur-sm floating-element" style="animation-delay: -1s"></div>
+<div class="absolute top-2/3 right-1/4 w-3 h-3 bg-secondary/30 rounded-full blur-md floating-element" style="animation-delay: -3s"></div>
+<div class="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-accent-lime/20 rounded-full blur-sm floating-element" style="animation-delay: -5s"></div>
+</div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop py-5 bg-background/40 backdrop-blur-2xl border-b border-border-glass">
+<div class="flex items-center gap-10">
+<span class="font-headline-lg text-2xl font-black text-text-primary tracking-tighter text-glow">FormCraft</span>
+<div class="hidden md:flex gap-8">
+<a class="text-sm font-medium text-primary hover:text-white transition-all" href="#">Product</a>
+<a class="text-sm font-medium text-text-muted hover:text-primary transition-all" href="#">Features</a>
+<a class="text-sm font-medium text-text-muted hover:text-primary transition-all" href="#">Pricing</a>
+<a class="text-sm font-medium text-text-muted hover:text-primary transition-all" href="#">Docs</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="hidden md:block text-sm font-medium text-text-muted hover:text-text-primary transition-colors">Sign In</button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2.5 rounded-lg font-bold btn-3d shimmer-sweep relative overflow-hidden text-sm">Get Started</button>
+</div>
+</nav>
+<main class="relative z-10">
+<!-- Immersive Hero Section -->
+<section class="min-h-screen pt-32 px-margin-desktop flex flex-col lg:flex-row items-center gap-16 max-w-max-width mx-auto relative overflow-visible">
+<div class="flex-1 reveal-up" id="hero-text">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8 backdrop-blur-md">
+<span class="font-label-mono text-[10px] text-primary uppercase tracking-[0.2em] font-bold">Generation 3 Engine</span>
+</div>
+<h1 class="font-display-lg text-6xl md:text-7xl text-text-primary mb-8 leading-[1.05] font-black text-glow tracking-tight">
+                Build the future <br/><span class="text-primary italic">of forms.</span>
+</h1>
+<p class="font-body-md text-text-muted max-w-xl mb-12 text-xl leading-relaxed">
+                The high-performance visual editor for engineering teams. Design stunning interactive experiences that output production-ready React components.
+            </p>
+<div class="flex flex-col sm:flex-row gap-6">
+<button class="bg-primary-container text-on-primary-container px-10 py-5 rounded-2xl font-black text-lg btn-3d shimmer-sweep relative overflow-hidden">Start Building Free</button>
+<button class="bg-surface/40 border border-border-glass hover:border-primary/50 text-text-primary px-10 py-5 rounded-2xl font-bold text-lg transition-all backdrop-blur-xl hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]">View Demo</button>
+</div>
+</div>
+<!-- 3D Composition Side -->
+<div class="flex-1 relative h-[600px] w-full flex items-center justify-center reveal-up delay-200" id="hero-3d-visual">
+<!-- Central Glow -->
+<div class="absolute w-[400px] h-[400px] bg-primary/20 blur-[120px] rounded-full animate-pulse"></div>
+<!-- Floating 3D-style cards -->
+<div class="relative w-full max-w-md perspective-[2000px]">
+<!-- Main Card (Z-index 20) -->
+<div class="glass-card p-6 rounded-2xl relative z-20 transform -rotate-6 floating-element" style="animation-duration: 8s">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-3 h-3 rounded-full bg-error/50"></div>
+<div class="w-8 h-2 rounded-full bg-white/10"></div>
+</div>
+<div class="space-y-4">
+<div class="h-10 rounded-xl bg-white/5 border border-white/10 w-full"></div>
+<div class="h-10 rounded-xl bg-primary/20 border border-primary/30 w-3/4"></div>
+<div class="h-24 rounded-xl bg-white/5 border border-white/10 w-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary/40 text-4xl">add_circle</span>
+</div>
+</div>
+</div>
+<!-- Input Card (Z-index 10) -->
+<div class="glass-card p-4 rounded-xl absolute -top-12 -right-8 z-10 transform rotate-12 floating-element w-48" style="animation-duration: 7s; animation-delay: -2s">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-6 h-6 rounded bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">toggle_on</span>
+</div>
+<div class="h-2 w-16 bg-white/20 rounded"></div>
+</div>
+<div class="h-1 w-full bg-white/10 rounded"></div>
+</div>
+<!-- Analytics Card (Z-index 30) -->
+<div class="glass-card p-5 rounded-xl absolute -bottom-16 -left-12 z-30 transform rotate-3 floating-element w-56" style="animation-duration: 9s; animation-delay: -1s">
+<div class="flex justify-between items-center mb-4">
+<div class="h-3 w-20 bg-white/30 rounded"></div>
+<span class="material-symbols-outlined text-accent-lime text-lg">trending_up</span>
+</div>
+<div class="flex gap-1 items-end h-16">
+<div class="bg-primary/40 w-full h-1/2 rounded-t-sm"></div>
+<div class="bg-primary/60 w-full h-3/4 rounded-t-sm"></div>
+<div class="bg-primary w-full h-full rounded-t-sm"></div>
+<div class="bg-primary/50 w-full h-2/3 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="px-margin-desktop py-32 max-w-max-width mx-auto">
+<div class="text-center mb-24 reveal-up">
+<h2 class="font-headline-lg text-4xl md:text-5xl text-text-primary mb-6 font-black text-glow">Engineered for Technical Elegance</h2>
+<p class="text-text-muted max-w-2xl mx-auto text-lg">Precision tools for modern teams who refuse to compromise on design or performance.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Large Card -->
+<div class="md:col-span-2 p-10 rounded-3xl glass-card relative overflow-hidden reveal-up group">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="relative z-10 h-full flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-primary text-5xl mb-6">bolt</span>
+<h3 class="font-headline-lg text-3xl text-text-primary mb-4 font-bold">Zero-Latency Builder</h3>
+<p class="text-text-muted text-lg max-w-md leading-relaxed">Our custom engine handles thousands of fields with 60fps performance. No lag, just pure creative flow.</p>
+</div>
+<div class="mt-16 rounded-2xl bg-black/40 border border-white/10 p-6 backdrop-blur-3xl transform group-hover:scale-[1.02] transition-transform">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+</div>
+<div class="h-40 rounded-xl bg-background/60 flex items-center justify-center border border-white/5 font-label-mono text-xs text-primary/60 tracking-wider">
+<span class="animate-pulse">// System optimized: 0.18ms field re-render loop active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Card 1 -->
+<div class="p-10 rounded-3xl glass-card reveal-up delay-100 group">
+<span class="material-symbols-outlined text-secondary text-5xl mb-6">security</span>
+<h3 class="font-headline-lg text-2xl text-text-primary mb-4 font-bold">Military Grade</h3>
+<p class="text-text-muted leading-relaxed">SOC2 Type II compliant with multi-layer AES-256 encryption for every data byte.</p>
+</div>
+<!-- Small Card 2 -->
+<div class="p-10 rounded-3xl glass-card reveal-up delay-200 group">
+<span class="material-symbols-outlined text-accent-lime text-5xl mb-6">api</span>
+<h3 class="font-headline-lg text-2xl text-text-primary mb-4 font-bold">Headless API</h3>
+<p class="text-text-muted leading-relaxed">First-class GraphQL &amp; REST support. Fetch form schemas and submissions anywhere.</p>
+</div>
+<!-- Medium Card -->
+<div class="md:col-span-2 p-10 rounded-3xl glass-card reveal-up delay-300 group">
+<div class="flex flex-col lg:flex-row gap-12 items-center">
+<div class="flex-1">
+<span class="material-symbols-outlined text-primary-container text-5xl mb-6">analytics</span>
+<h3 class="font-headline-lg text-3xl text-text-primary mb-4 font-bold">Deep Visual Analytics</h3>
+<p class="text-text-muted text-lg leading-relaxed">Field-level drop-off rates and volumetric heatmaps integrated directly into your visual dashboard.</p>
+</div>
+<div class="w-full lg:w-2/5 aspect-square glass-card rounded-2xl overflow-hidden relative border-primary/20">
+<img class="w-full h-full object-cover opacity-60 scale-110 group-hover:scale-100 transition-transform duration-1000" data-alt="High-end data visualization dashboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsTkMFg-wx4PVJi1TmB9GA3j63_H5Yu2pVpt6d0G-rHgtortdfmCedOy34Kn0j_ffD4GIwcAsMB5jvd5Dp89a7Lub5R6ZZe--6piAgHdzQWECc3lcnKWHPiYJu7cEu4KQmmbeneXSZddEJh0k2BKkz01PF7W7OysLO6u4nPud74SMFH6KdAquNpweHwrEE7jBAmLs23821U1KTEZRv0cwTDDmXauMHeHVNIwOOHzmRy9bwgP1wiR1aeRpDAnGhKXyufIu1j7dphLQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing Section -->
+<section class="px-margin-desktop py-32 max-w-max-width mx-auto">
+<div class="text-center mb-24 reveal-up">
+<h2 class="font-headline-lg text-4xl md:text-5xl text-text-primary mb-6 font-black text-glow">Simple, Transparent Pricing</h2>
+<p class="text-text-muted text-lg">Scale from solo creator to global enterprise without hidden complexity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+<!-- Starter -->
+<div class="p-12 rounded-3xl glass-card reveal-up hover:border-primary/20">
+<h3 class="font-headline-lg text-2xl text-text-primary mb-3">Starter</h3>
+<p class="text-text-muted mb-10 text-sm">Perfect for prototypes.</p>
+<div class="mb-10">
+<span class="text-5xl font-black text-text-primary">$0</span>
+<span class="text-text-muted font-label-mono ml-2">/mo</span>
+</div>
+<ul class="space-y-5 mb-12 text-text-muted">
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">check_circle</span> 3 Active Forms</li>
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">check_circle</span> 100 Monthly Responses</li>
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">check_circle</span> Basic Logic</li>
+</ul>
+<button class="w-full py-4 rounded-xl border border-white/10 font-bold hover:bg-white/5 transition-all">Get Started</button>
+</div>
+<!-- Pro -->
+<div class="p-12 rounded-3xl glass-card border-2 border-primary/50 relative transform md:-translate-y-8 shadow-[0_30px_60px_-15px_rgba(124,58,237,0.3)] reveal-up delay-100">
+<div class="absolute top-0 right-12 -translate-y-1/2 bg-primary text-background px-6 py-1.5 rounded-full text-[10px] font-label-mono font-black uppercase tracking-[0.2em]">Most Popular</div>
+<h3 class="font-headline-lg text-2xl text-text-primary mb-3">Pro</h3>
+<p class="text-text-muted mb-10 text-sm">For scaling companies.</p>
+<div class="mb-10">
+<span class="text-5xl font-black text-text-primary">$49</span>
+<span class="text-text-muted font-label-mono ml-2">/mo</span>
+</div>
+<ul class="space-y-5 mb-12 text-text-muted">
+<li class="flex items-center gap-4 text-text-primary"><span class="material-symbols-outlined text-primary">verified</span> Unlimited Forms</li>
+<li class="flex items-center gap-4 text-text-primary"><span class="material-symbols-outlined text-primary">verified</span> 10k Monthly Responses</li>
+<li class="flex items-center gap-4 text-text-primary"><span class="material-symbols-outlined text-primary">verified</span> Custom Domains</li>
+<li class="flex items-center gap-4 text-text-primary"><span class="material-symbols-outlined text-primary">verified</span> Advanced Conditionals</li>
+</ul>
+<button class="w-full py-4 rounded-xl bg-primary text-background font-black btn-3d shimmer-sweep relative overflow-hidden">Upgrade to Pro</button>
+</div>
+<!-- Enterprise -->
+<div class="p-12 rounded-3xl glass-card reveal-up delay-200">
+<h3 class="font-headline-lg text-2xl text-text-primary mb-3">Enterprise</h3>
+<p class="text-text-muted mb-10 text-sm">For world-class teams.</p>
+<div class="mb-10">
+<span class="text-5xl font-black text-text-primary">Custom</span>
+</div>
+<ul class="space-y-5 mb-12 text-text-muted">
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">hub</span> Dedicated Support</li>
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">hub</span> SSO &amp; SAML</li>
+<li class="flex items-center gap-4"><span class="material-symbols-outlined text-primary">hub</span> White-label Option</li>
+</ul>
+<button class="w-full py-4 rounded-xl border border-white/10 font-bold hover:bg-white/5 transition-all">Talk to Sales</button>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="px-margin-desktop py-40 max-w-5xl mx-auto text-center reveal-up">
+<h2 class="font-display-lg text-5xl md:text-6xl text-text-primary mb-10 font-black text-glow">Ready to evolve?</h2>
+<p class="text-2xl text-text-muted mb-16 max-w-2xl mx-auto leading-relaxed">Join 10,000+ developers building the future of interactive web experiences.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-8">
+<button class="bg-primary-container text-on-primary-container px-12 py-6 rounded-2xl font-black text-xl btn-3d shimmer-sweep relative overflow-hidden">Start Building Now</button>
+<button class="bg-surface/40 border border-border-glass px-12 py-6 rounded-2xl font-bold text-xl text-text-primary hover:bg-white/5 backdrop-blur-xl transition-all">Talk to an Expert</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="relative z-10 w-full py-20 px-margin-desktop bg-background border-t border-border-glass">
+<div class="max-w-max-width mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start gap-16 mb-20">
+<div class="flex flex-col gap-6">
+<span class="text-text-primary font-black text-3xl tracking-tighter text-glow">FormCraft</span>
+<p class="text-text-muted max-w-sm leading-relaxed">Transforming the way developers interact with data through beautiful, high-performance form architecture.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-16">
+<div class="flex flex-col gap-4">
+<h4 class="text-text-primary font-bold text-sm uppercase tracking-widest">Platform</h4>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Features</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Integrations</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Changelog</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-text-primary font-bold text-sm uppercase tracking-widest">Legal</h4>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Privacy</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Terms</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Security</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-text-primary font-bold text-sm uppercase tracking-widest">Social</h4>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Twitter</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">GitHub</a>
+<a class="text-text-muted hover:text-primary transition-colors text-sm" href="#">Discord</a>
+</div>
+</div>
+</div>
+<div class="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-xs text-text-muted">© 2024 FormCraft Inc. Engineered in the digital void.</p>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-surface/50 border border-white/10 flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-surface/50 border border-white/10 flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/50 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-lg">public</span>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script>
+    // Intersection Observer for scroll reveal animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal-up').forEach((el) => {
+        observer.observe(el);
+    });
+
+    // Parallax Depth Effect for Hero Elements
+    window.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+        
+        const cards = document.querySelectorAll('.floating-element');
+        cards.forEach((card, index) => {
+            const speed = (index + 1) * 20;
+            const tiltX = y * speed;
+            const tiltY = -x * speed;
+            card.style.transform += ` translate(${x * speed}px, ${y * speed}px)`;
+        });
+    });
+
+    // Subtle 3D Card tilt logic (already partially handled by CSS hover, but can be enhanced)
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)`;
+        });
+    });
+</script>
+</body></html>
